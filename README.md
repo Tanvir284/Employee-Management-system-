@@ -1,2 +1,2 @@
 # Employee-Management-system-
-2nd year Software develpment project 
+2nd year Software development project 
