@@ -17,7 +17,7 @@ namespace Employeemanagment
         {
             InitializeComponent();
         }
-        SqlConnection Con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\admin\Documents\employeeDb.mdf;Integrated Security=True;Connect Timeout=30");
+        SqlConnection Con = new SqlConnection(ConfigHelper.GetConnectionString());
 
         private void login_Load(object sender, EventArgs e)
         {
@@ -43,8 +43,11 @@ namespace Employeemanagment
 
             try
             {
-                string query = "SELECT * FROM login WHERE Id = '" + idTb.Text + "' AND password = '" + passTb.Text + "'";
-                SqlDataAdapter sda = new SqlDataAdapter(query, Con);
+                string query = "SELECT * FROM login WHERE Id = @Id AND password = @Password";
+                using SqlCommand cmd = new SqlCommand(query, Con);
+                cmd.Parameters.AddWithValue("@Id", idTb.Text);
+                cmd.Parameters.AddWithValue("@Password", passTb.Text);
+                SqlDataAdapter sda = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -131,8 +134,10 @@ namespace Employeemanagment
                 try
                 {
                     Con.Open();
-                    string query = "INSERT INTO login VALUES ('" + idTb.Text + "','" + passTb.Text + "')";
-                    SqlCommand cmd = new SqlCommand(query, Con);
+                    string query = "INSERT INTO login(Id, password) VALUES (@Id, @Password)";
+                    using SqlCommand cmd = new SqlCommand(query, Con);
+                    cmd.Parameters.AddWithValue("@Id", idTb.Text);
+                    cmd.Parameters.AddWithValue("@Password", passTb.Text);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Employee Successfully Added.");
                     Con.Close();
