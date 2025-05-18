@@ -1,0 +1,24 @@
+# Auto-generated build artifacts
+# Ignore Visual Studio and .NET build outputs
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.deps.json
+*.runtimeconfig.json
+*.nuget
+*.dgspec.json
+*.g.props
+*.g.targets
+*.props
+*.targets
+*.resources
+# Build config files
+*.user
+*.db
+*.sqlite
+# IDE directories
+**/Debug/
+**/Release/
