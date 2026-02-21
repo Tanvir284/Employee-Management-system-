@@ -16,6 +16,7 @@ namespace Employeemanagment
         public deleteemp()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
 
         SqlConnection Con = new SqlConnection(ConfigHelper.GetConnectionString());
@@ -34,7 +35,7 @@ namespace Employeemanagment
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }
@@ -49,17 +50,16 @@ namespace Employeemanagment
 
         }
 
-        private void populate()
+        private async void populate()
         {
-            Con.Open();
-            string query = "select * from employee where ID=@ID";
-            using SqlCommand cmd = new SqlCommand(query, Con);
-            cmd.Parameters.AddWithValue("@ID", IDTb.Text);
-            SqlDataAdapter sda = new SqlDataAdapter(cmd);
-            var ds = new DataSet();
-            sda.Fill(ds);
-            dataGridView1.DataSource = ds.Tables[0];
-            Con.Close();
+            try
+            {
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emp = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                    System.Linq.Queryable.Where(db.Employees, e => e.Id == IDTb.Text.Trim()));
+                dataGridView1.DataSource = emp;
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -81,32 +81,33 @@ namespace Employeemanagment
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private async void button4_Click(object sender, EventArgs e)
         {
-            if (IDTb.Text == "")
+            if (string.IsNullOrWhiteSpace(IDTb.Text))
             {
                 MessageBox.Show("Enter the Employee ID who are leave!!");
+                return;
             }
-            else
+            try
             {
-                try
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emp = await db.Employees.FindAsync(IDTb.Text.Trim());
+                if (emp != null)
                 {
-                    Con.Open();
-                    string query = "delete from employee where ID=@ID";
-                    using SqlCommand cmd = new SqlCommand(query, Con);
-                    cmd.Parameters.AddWithValue("@ID", IDTb.Text);
-                    cmd.ExecuteNonQuery();
+                    db.Employees.Remove(emp);
+                    await db.SaveChangesAsync();
                     MessageBox.Show("Employee Delete Successfully.");
                     IDTb.Clear();
+                    dataGridView1.DataSource = null;
                 }
-                catch (Exception Ex)
+                else
                 {
-                    MessageBox.Show(Ex.Message);
+                    MessageBox.Show("Employee not found.");
                 }
-                finally
-                {
-                    Con.Close();
-                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
             }
         }
     }

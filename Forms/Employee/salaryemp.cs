@@ -16,6 +16,7 @@ namespace Employeemanagment
         public salaryemp()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
 
         SqlConnection Con = new SqlConnection(ConfigHelper.GetConnectionString());
@@ -29,7 +30,7 @@ namespace Employeemanagment
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }
@@ -44,50 +45,43 @@ namespace Employeemanagment
 
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private async void panel1_Paint(object sender, PaintEventArgs e)
         {
-            Con.Open();
-            string query = "select name, ID, salary from employee";
-            SqlDataAdapter sda = new SqlDataAdapter(query, Con);
-            var ds = new DataSet();
-            sda.Fill(ds);
-            dataGridView1.DataSource = ds.Tables[0];
-            Con.Close();
+            try
+            {
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emps = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                    System.Linq.Queryable.Select(db.Employees, emp => new { emp.Name, emp.Id, emp.Salary }));
+                dataGridView1.DataSource = emps;
+            }
+            catch { }
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private async void button5_Click(object sender, EventArgs e)
         {
-            if (IDTb.Text == "")
+            if (string.IsNullOrWhiteSpace(IDTb.Text))
             {
-                MessageBox.Show("Enter the Shift who are work now!!");
+                MessageBox.Show("Enter the Employee ID!!");
+                return;
             }
-            else
+            try
             {
-                try
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emp = await db.Employees.FindAsync(IDTb.Text.Trim());
+                if (emp != null)
                 {
-                    Con.Open();
-                    string query = "select name, ID, salary from employee where ID=@ID";
-                    using SqlCommand cmd = new SqlCommand(query, Con);
-                    cmd.Parameters.AddWithValue("@ID", IDTb.Text);
-                    DataTable dt = new DataTable();
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-
-                    sda.Fill(dt);
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        nameTb1.Text = dr["name"].ToString();
-                        IDTb1.Text = dr["ID"].ToString();
-                        salaryTb1.Text = dr["salary"].ToString();
-                    }
+                    nameTb1.Text = emp.Name;
+                    IDTb1.Text = emp.Id;
+                    salaryTb1.Text = emp.Salary;
                 }
-                catch (Exception Ex)
+                else
                 {
-                    MessageBox.Show(Ex.Message);
+                    MessageBox.Show("Employee not found.");
                 }
-                finally
-                {
-                    Con.Close();
-                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
             }
         }
     }

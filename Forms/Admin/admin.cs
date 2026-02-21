@@ -15,66 +15,64 @@ namespace Employeemanagment
         public admin()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+        private void panel1_Paint(object sender, PaintEventArgs e) { }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            addemp ae = new addemp();
-            ae.Show();
+            var f = new EmployeeOperationsForm("ADD");
+            f.Show();
             this.Hide();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            searchemp se = new searchemp();
-            se.Show();
+            var f = new EmployeeOperationsForm("MANAGE");
+            f.Show();
             this.Hide();
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            updateemp ue = new updateemp();
-            ue.Show();
+            var f = new EmployeeOperationsForm("MANAGE");
+            f.Show();
             this.Hide();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            salaryemp salary = new salaryemp();
-            salary.Show();
+            var f = new EmployeeOperationsForm("MANAGE");
+            f.Show();
             this.Hide();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            deleteemp de = new deleteemp();
-            de.Show();
+            var f = new EmployeeOperationsForm("MANAGE");
+            f.Show();
             this.Hide();
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            shiftemp shift = new shiftemp();
-            shift.Show();
+            var f = new EmployeeOperationsForm("MANAGE");
+            f.Show();
             this.Hide();
         }
 
@@ -83,16 +81,57 @@ namespace Employeemanagment
             Application.Exit();
         }
 
-        private void admin_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void admin_Load(object sender, EventArgs e) { }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            uuppddaattee up = new uuppddaattee();
-            up.Show();
+            var f = new EmployeeOperationsForm("MANAGE");
+            f.Show();
+            this.Hide();
+        }
+
+        // ── Advanced Feature Buttons ──────────────────────────────────────────
+        private void btnAttendance_Click(object sender, EventArgs e)
+        {
+            AttendanceForm af = new AttendanceForm();
+            af.Show();
+            this.Hide();
+        }
+
+        private void btnLeave_Click(object sender, EventArgs e)
+        {
+            LeaveManagementForm lm = new LeaveManagementForm();
+            lm.Show();
+            this.Hide();
+        }
+
+        private void btnPerformance_Click(object sender, EventArgs e)
+        {
+            PerformanceReviewForm pr = new PerformanceReviewForm();
+            pr.Show();
+            this.Hide();
+        }
+
+        private void btnPayroll_Click(object sender, EventArgs e)
+        {
+            PayrollForecastForm pf = new PayrollForecastForm();
+            pf.Show();
+            this.Hide();
+        }
+
+        private void btnOffboarding_Click(object sender, EventArgs e)
+        {
+            OffboardingForm of = new OffboardingForm();
+            of.Show();
+            this.Hide();
+        }
+
+        private void btnHRInsights_Click(object sender, EventArgs e)
+        {
+            HRInsightsForm hr = new HRInsightsForm();
+            hr.Show();
             this.Hide();
         }
     }
 }
+

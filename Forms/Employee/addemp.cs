@@ -18,6 +18,7 @@ namespace Employeemanagment
         public addemp()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
 
         SqlConnection Con = new SqlConnection(ConfigHelper.GetConnectionString());
@@ -32,37 +33,35 @@ namespace Employeemanagment
             {
                 try
                 {
-                    Con.Open();
-                    string query = "INSERT INTO employee(name, ID, age, salary, email, num, DOB, joindate, address, shift, gender) VALUES (@name, @ID, @age, @salary, @email, @num, @DOB, @joindate, @address, @shift, @gender)";
-                    using SqlCommand cmd = new SqlCommand(query, Con);
-                    cmd.Parameters.AddWithValue("@name", nameTb.Text);
-                    cmd.Parameters.AddWithValue("@ID", IDTb.Text);
-                    cmd.Parameters.AddWithValue("@age", ageTb.Text);
-                    cmd.Parameters.AddWithValue("@salary", salaryTb.Text);
-                    cmd.Parameters.AddWithValue("@email", emailTb.Text);
-                    cmd.Parameters.AddWithValue("@num", numTb.Text);
-                    cmd.Parameters.AddWithValue("@DOB", DOBTb.Text);
-                    cmd.Parameters.AddWithValue("@joindate", joindateTb.Text);
-                    cmd.Parameters.AddWithValue("@address", addressTb.Text);
-                    cmd.Parameters.AddWithValue("@shift", shiftTb.Text);
-                    cmd.Parameters.AddWithValue("@gender", genderTb.Text);
-                    cmd.ExecuteNonQuery();
+                    using var db = new Employeemanagment.Data.EmployeeDbContext();
+                    var newEmp = new Employeemanagment.Data.Models.Employee
+                    {
+                        Id = IDTb.Text.Trim(),
+                        Name = nameTb.Text.Trim(),
+                        Age = ageTb.Text.Trim(),
+                        Salary = salaryTb.Text.Trim(),
+                        Email = emailTb.Text.Trim(),
+                        Num = numTb.Text.Trim(),
+                        Dob = DOBTb.Text.Trim(),
+                        JoinDate = joindateTb.Text.Trim(),
+                        Address = addressTb.Text.Trim(),
+                        Shift = shiftTb.Text.Trim(),
+                        Gender = genderTb.Text.Trim()
+                    };
+                    db.Employees.Add(newEmp);
+                    db.SaveChanges();
                     MessageBox.Show("Employee Successfully Added.");
                 }
                 catch (Exception Ex)
                 {
                     MessageBox.Show(Ex.Message);
                 }
-                finally
-                {
-                    Con.Close();
-                }
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }

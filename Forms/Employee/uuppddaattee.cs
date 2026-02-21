@@ -7,6 +7,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Employeemanagment
@@ -16,21 +20,20 @@ namespace Employeemanagment
         public uuppddaattee()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
         SqlConnection Con = new SqlConnection(ConfigHelper.GetConnectionString());
 
-        private void populate()
+        private async void populate()
         {
-            Con.Open();
-            string query = "select * from employee where ID=@ID";
-            using SqlCommand cmd = new SqlCommand(query, Con);
-            cmd.Parameters.AddWithValue("@ID", IDTb.Text);
-            SqlDataAdapter sda = new SqlDataAdapter(cmd);
-            SqlCommandBuilder builder = new SqlCommandBuilder(sda);
-            var ds = new DataSet();
-            sda.Fill(ds);
-            allemployeeDGV.DataSource = ds.Tables[0];
-            Con.Close();
+            try
+            {
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emp = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                    System.Linq.Queryable.Where(db.Employees, e => e.Id == IDTb.Text.Trim()));
+                allemployeeDGV.DataSource = emp;
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
         private void button6_Click(object sender, EventArgs e)
         {
@@ -51,38 +54,40 @@ namespace Employeemanagment
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private async void button4_Click(object sender, EventArgs e)
         {
-            if (nameTb.Text == "" || ageTb.Text == "" || salaryTb.Text == "" || emailTb.Text == "" || numTb.Text == "" || DOBTb.Text == "" || joindateTb.Text == "" || addressTb.Text == "" || shiftTb.Text == "" || genderTb.Text == "")
+            if (string.IsNullOrWhiteSpace(nameTb.Text) || string.IsNullOrWhiteSpace(ageTb.Text) || string.IsNullOrWhiteSpace(salaryTb.Text) || string.IsNullOrWhiteSpace(emailTb.Text) || string.IsNullOrWhiteSpace(numTb.Text) || string.IsNullOrWhiteSpace(DOBTb.Text) || string.IsNullOrWhiteSpace(joindateTb.Text) || string.IsNullOrWhiteSpace(addressTb.Text) || string.IsNullOrWhiteSpace(shiftTb.Text) || string.IsNullOrWhiteSpace(genderTb.Text))
             {
                 MessageBox.Show("Missing Information!!");
+                return;
             }
-            else
+            try
             {
-                try
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emp = await db.Employees.FindAsync(IDTb.Text.Trim());
+                if (emp != null)
                 {
-                    Con.Open();
-                    string query = "update employee set name=@name, ID=@ID, age=@age, salary=@salary, email=@email, num=@num, DOB=@DOB, joindate=@joindate, address=@address, shift=@shift, gender=@gender where ID=@ID";
-                    using SqlCommand cmd = new SqlCommand(query, Con);
-                    cmd.Parameters.AddWithValue("@name", nameTb.Text);
-                    cmd.Parameters.AddWithValue("@ID", IDTb.Text);
-                    cmd.Parameters.AddWithValue("@age", ageTb.Text);
-                    cmd.Parameters.AddWithValue("@salary", salaryTb.Text);
-                    cmd.Parameters.AddWithValue("@email", emailTb.Text);
-                    cmd.Parameters.AddWithValue("@num", numTb.Text);
-                    cmd.Parameters.AddWithValue("@DOB", DOBTb.Text);
-                    cmd.Parameters.AddWithValue("@joindate", joindateTb.Text);
-                    cmd.Parameters.AddWithValue("@address", addressTb.Text);
-                    cmd.Parameters.AddWithValue("@shift", shiftTb.Text);
-                    cmd.Parameters.AddWithValue("@gender", genderTb.Text);
-                    cmd.ExecuteNonQuery();
+                    emp.Name = nameTb.Text.Trim();
+                    emp.Age = ageTb.Text.Trim();
+                    emp.Salary = salaryTb.Text.Trim();
+                    emp.Email = emailTb.Text.Trim();
+                    emp.Num = numTb.Text.Trim();
+                    emp.Dob = DOBTb.Text.Trim();
+                    emp.JoinDate = joindateTb.Text.Trim();
+                    emp.Address = addressTb.Text.Trim();
+                    emp.Shift = shiftTb.Text.Trim();
+                    emp.Gender = genderTb.Text.Trim();
+                    await db.SaveChangesAsync();
                     MessageBox.Show("Employee Update Successfully.");
-                    Con.Close();
                 }
-                catch (Exception Ex)
+                else
                 {
-                    MessageBox.Show(Ex.Message);
+                    MessageBox.Show("Employee not found.");
                 }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
             }
         }
 
@@ -95,7 +100,7 @@ namespace Employeemanagment
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }

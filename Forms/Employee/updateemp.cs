@@ -17,6 +17,7 @@ namespace Employeemanagment
         public updateemp()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
 
         private void updateemp_Load(object sender, EventArgs e)
@@ -33,7 +34,7 @@ namespace Employeemanagment
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }
@@ -42,16 +43,15 @@ namespace Employeemanagment
         {
             Application.Exit();
         }
-        private void populate()
+        private async void populate()
         {
-            Con.Open();
-            string query = "select * from employee";
-            SqlDataAdapter sda = new SqlDataAdapter(query, Con);
-            SqlCommandBuilder builder = new SqlCommandBuilder(sda);
-            var ds = new DataSet();
-            sda.Fill(ds);
-            allemployeeDGV.DataSource = ds.Tables[0];
-            Con.Close();
+            try
+            {
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emps = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(db.Employees);
+                allemployeeDGV.DataSource = emps;
+            }
+            catch { }
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

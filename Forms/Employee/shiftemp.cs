@@ -16,6 +16,7 @@ namespace Employeemanagment
         public shiftemp()
         {
             InitializeComponent();
+            UITheme.ApplyThemeToForm(this);
         }
 
         SqlConnection Con = new SqlConnection(ConfigHelper.GetConnectionString());
@@ -29,7 +30,7 @@ namespace Employeemanagment
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form1 f1 = new Form1();
+            MainDashboard f1 = new MainDashboard();
             f1.Show();
             this.Hide();
         }
@@ -54,33 +55,25 @@ namespace Employeemanagment
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private async void button4_Click(object sender, EventArgs e)
         {
-            if (shiftTb.Text == "")
+            if (string.IsNullOrWhiteSpace(shiftTb.Text))
             {
-                MessageBox.Show("Enter the Shift who are work now!!");
+                MessageBox.Show("Enter the Shift!!");
+                return;
             }
-            else
+            try
             {
-                try
-                {
-                    Con.Open();
-                    string query = "select name, ID, shift from employee where shift=@shift";
-                    using SqlCommand cmd = new SqlCommand(query, Con);
-                    cmd.Parameters.AddWithValue("@shift", shiftTb.Text);
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    var ds = new DataSet();
-                    sda.Fill(ds);
-                    dataGridView1.DataSource = ds.Tables[0];
-                }
-                catch (Exception Ex)
-                {
-                    MessageBox.Show(Ex.Message);
-                }
-                finally
-                {
-                    Con.Close();
-                }
+                using var db = new Employeemanagment.Data.EmployeeDbContext();
+                var emps = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                    System.Linq.Queryable.Select(
+                        System.Linq.Queryable.Where(db.Employees, emp => emp.Shift == shiftTb.Text.Trim()),
+                        emp => new { emp.Name, emp.Id, emp.Shift }));
+                dataGridView1.DataSource = emps;
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
             }
         }
     }

@@ -52,6 +52,15 @@
             pictureBox6 = new PictureBox();
             pictureBox7 = new PictureBox();
             button10 = new Button();
+            // Advanced feature buttons
+            panelAdvanced = new Panel();
+            lblAdvancedTitle = new Label();
+            btnAttendance = new Button();
+            btnLeave = new Button();
+            btnPerformance = new Button();
+            btnPayroll = new Button();
+            btnOffboarding = new Button();
+            btnHRInsights = new Button();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
@@ -341,11 +350,80 @@
             button10.UseVisualStyleBackColor = false;
             button10.Click += button10_Click;
             // 
+            // panelAdvanced
+            // 
+            panelAdvanced.BackColor = Color.FromArgb(80, 30, 10);
+            panelAdvanced.Location = new Point(-10, 355);
+            panelAdvanced.Size = new Size(675, 215);
+            //
+            // lblAdvancedTitle
+            //
+            lblAdvancedTitle.AutoSize = true;
+            lblAdvancedTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblAdvancedTitle.ForeColor = Color.Bisque;
+            lblAdvancedTitle.Location = new Point(190, 8);
+            lblAdvancedTitle.Text = "🚀 Advanced HR Features";
+            panelAdvanced.Controls.Add(lblAdvancedTitle);
+            //
+            // btnAttendance
+            //
+            btnAttendance.BackColor = Color.Brown; btnAttendance.ForeColor = Color.Bisque;
+            btnAttendance.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnAttendance.Location = new Point(15, 35); btnAttendance.Size = new Size(110, 50);
+            btnAttendance.Text = "📅 Attendance\nTracking";
+            btnAttendance.Click += btnAttendance_Click;
+            panelAdvanced.Controls.Add(btnAttendance);
+            //
+            // btnLeave
+            //
+            btnLeave.BackColor = Color.Brown; btnLeave.ForeColor = Color.Bisque;
+            btnLeave.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnLeave.Location = new Point(135, 35); btnLeave.Size = new Size(110, 50);
+            btnLeave.Text = "🏖️ Leave\nManagement";
+            btnLeave.Click += btnLeave_Click;
+            panelAdvanced.Controls.Add(btnLeave);
+            //
+            // btnPerformance
+            //
+            btnPerformance.BackColor = Color.Brown; btnPerformance.ForeColor = Color.Bisque;
+            btnPerformance.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnPerformance.Location = new Point(255, 35); btnPerformance.Size = new Size(110, 50);
+            btnPerformance.Text = "⭐ Performance\nReviews";
+            btnPerformance.Click += btnPerformance_Click;
+            panelAdvanced.Controls.Add(btnPerformance);
+            //
+            // btnPayroll
+            //
+            btnPayroll.BackColor = Color.Brown; btnPayroll.ForeColor = Color.Bisque;
+            btnPayroll.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnPayroll.Location = new Point(375, 35); btnPayroll.Size = new Size(110, 50);
+            btnPayroll.Text = "💼 Payroll\nForecasting";
+            btnPayroll.Click += btnPayroll_Click;
+            panelAdvanced.Controls.Add(btnPayroll);
+            //
+            // btnOffboarding
+            //
+            btnOffboarding.BackColor = Color.Brown; btnOffboarding.ForeColor = Color.Bisque;
+            btnOffboarding.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnOffboarding.Location = new Point(15, 95); btnOffboarding.Size = new Size(110, 50);
+            btnOffboarding.Text = "🚪 Employee\nOffboarding";
+            btnOffboarding.Click += btnOffboarding_Click;
+            panelAdvanced.Controls.Add(btnOffboarding);
+            //
+            // btnHRInsights
+            //
+            btnHRInsights.BackColor = Color.FromArgb(120, 20, 0); btnHRInsights.ForeColor = Color.Bisque;
+            btnHRInsights.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnHRInsights.Location = new Point(135, 95); btnHRInsights.Size = new Size(230, 50);
+            btnHRInsights.Text = "🤖 AI-Based HR Insights & Analytics";
+            btnHRInsights.Click += btnHRInsights_Click;
+            panelAdvanced.Controls.Add(btnHRInsights);
+            // 
             // admin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(659, 392);
+            ClientSize = new Size(659, 575);
             Controls.Add(button10);
             Controls.Add(pictureBox7);
             Controls.Add(button7);
@@ -363,8 +441,9 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(panel3);
+            Controls.Add(panelAdvanced);
             Name = "admin";
-            Text = "admin";
+            Text = "Employee Management System - Admin";
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             panel1.ResumeLayout(false);
@@ -403,5 +482,14 @@
         private PictureBox pictureBox6;
         private PictureBox pictureBox7;
         private Button button10;
+        // Advanced features
+        private Panel panelAdvanced;
+        private Label lblAdvancedTitle;
+        private Button btnAttendance;
+        private Button btnLeave;
+        private Button btnPerformance;
+        private Button btnPayroll;
+        private Button btnOffboarding;
+        private Button btnHRInsights;
     }
 }
